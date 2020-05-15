@@ -12,7 +12,7 @@ class Login extends Component{
         super(props)
         
         this.state = {
-              loginStatus : '',
+              loginStatus : 'Please enter your credentials',
               email : '',
               password : '',
               token : '',
@@ -37,6 +37,9 @@ class Login extends Component{
             axios.post('http://127.0.0.1:8000/api/v1/login',data)
             .then(response =>{
                 if(response.status === 200){
+                    this.setState({
+                        loginStatus : 'Login Successful'
+                    });
                     console.log(response)
                     var JWTtoken = response.data.token
                     localStorage.setItem("JWTtoken",JWTtoken)
@@ -56,14 +59,15 @@ class Login extends Component{
                     .catch(err =>{
                         console.log(err)
                     }) 
-
-                    // 
-                    // 
-                    // 
-
-                }})
+                }
+            })
             .catch(error => {
                 console.log(error);
+                if(error.response.status===401){
+                    this.setState({
+                        loginStatus : 'Incorrect Username or Password'
+                    });
+                }
             }) 
     
 }
@@ -102,7 +106,7 @@ class Login extends Component{
                                 <Button type="submit" className="btn btn-primary" style={{ backgroundColor:'green',color:'white'}}>Login</Button>
                                
                                {/* ERROR MESSAGE FOR INVALID LOGIN */}
-                                <div  style={{color:'red'}}>{this.state.status}</div>
+                                <div  style={{color:'red'}}>{this.state.loginStatus}</div>
                                 
                                
                                 <h5>Not having an Account yet ?<br/>
